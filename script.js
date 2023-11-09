@@ -1,85 +1,41 @@
-// Define the URL for the ArcGIS REST API endpoint.
 const apiUrl = "https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=1%3D1&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json";
 
-// Function to format a timestamp into a human-readable date.
 function formatDate(timestamp) {
-  if (timestamp) {
-      const date = new Date(timestamp);
-      return date.toDateString();
-  }
-  return "N/A";
+    if (timestamp) {
+        const date = new Date(timestamp);
+        return date.toDateString();
+    }
+    return "N/A";
 }
 
-// Fetch data from the API and process it.
-fetch(apiUrl)
-  .then(response => response.json())
-  .then(data => {
-    // Extract the features array from the API response.
-    const features = data.features;
-    
-    // Select a correct answer and two incorrect answers randomly.
-    const correctAnswer = features[Math.floor(Math.random() * features.length)].attributes;
-    const incorrectAnswer1 = features[Math.floor(Math.random() * features.length)].attributes;
-    const incorrectAnswer2 = features[Math.floor(Math.random() * features.length)].attributes;
-    
-    // Set a boolean attribute 'isCorrect' for the correct and incorrect answers.
-    correctAnswer.isCorrect = true;
-    incorrectAnswer1.isCorrect = false;
-    incorrectAnswer2.isCorrect = false;
+// Function to fetch and populate the table
+function populateTable() {
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector("#dataTable tbody");
 
-    // Format the inspection date for the correct answer (or "N/A" if missing).
-    const inspectionDate = formatDate(correctAnswer.InspectionDate) || "N/A";
-    
-    // Create an array to hold the answer options.
-    const answers = [correctAnswer, incorrectAnswer1, incorrectAnswer2];
+            data.features.forEach(feature => {
+                const attributes = feature.attributes;
+                const inspectionDate = formatDate(attributes.InspectionDate) || "N/A";
+                const premiseName = attributes.premise_name || "N/A";
+                const violationComments = attributes.Insp_Viol_Comments || "N/A";
+                const premise_street = attributes.premise_adr1_street || "N/A";
 
-    // Function to shuffle the answer options randomly.
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
 
-    // Shuffle the answer options.
-    shuffleArray(answers);
+                cell1.textContent = inspectionDate;
+                cell2.textContent = premiseName;
+                cell3.textContent = premise_street;
+                cell4.textContent = violationComments;
+            });
+        })
+        .catch(error => console.error("Error fetching data: " + error));
+}
 
-    // Get references to HTML elements by their IDs.
-    const promptDiv = document.getElementById("prompt");
-    const option1 = document.getElementById("option1");
-    const option2 = document.getElementById("option2");
-    const option3 = document.getElementById("option3");
-
-    // Populate the HTML elements with the question and answer options.
-    promptDiv.textContent = "\"" + correctAnswer.Insp_Viol_Comments + "\" - " + inspectionDate;
-    option1.textContent = answers[0].premise_name + " on " + answers[0].premise_adr1_street;
-    option2.textContent = answers[1].premise_name + " on " + answers[1].premise_adr1_street;
-    option3.textContent = answers[2].premise_name + " on " + answers[2].premise_adr1_street;
-
-    // Add event listeners to each option.
-    option1.addEventListener("click", checkAnswer);
-    option2.addEventListener("click", checkAnswer);
-    option3.addEventListener("click", checkAnswer);
-
-    // Function to check if the clicked option is correct.
-    function checkAnswer(event) {
-    const clickedOption = event.currentTarget;
-    // Get the corresponding data object from the original array.
-    const clickedData = answers.find(answer => answer.premise_name === clickedOption.textContent.split(" on ")[0]);
-
-    // Check the 'isCorrect' attribute to determine if the clicked option is correct.
-    const isCorrect = clickedData.isCorrect;
-
-    // Display a message based on whether the clicked option is correct.
-    if (isCorrect) {
-      alert("Correct answer!");
-    } else {
-      alert("Incorrect answer. Try again.");
-    }
-    }
-  }
-)
-  .catch(error => {
-    // Handle and log any errors that occur during the data fetch.
-    console.error("Error fetching data: " + error);
-  });
+// Call the function to populate the table
+populateTable();
