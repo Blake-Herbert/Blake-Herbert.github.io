@@ -1,0 +1,65 @@
+.custom-box {
+    background-color: hsl(171, 100%, 41%);
+    color: #ffffff;
+  }
+
+.custom-box:hover {
+    background-color: hsl(171, 98%, 30%);
+    cursor: pointer;
+}
+
+.custom-header {
+  background-color: hsl(171, 100%, 41%);
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+}
+
+.header-link {
+  display: inline-block;
+  margin-right: 1rem;
+  padding: 1rem;
+}
+
+.hamburger-menu {
+  display: none; /* Initially hide the hamburger menu */
+  cursor: pointer;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 6px 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .header-links {
+      display: none; /* Hide box elements on smaller screens */
+      flex-direction: column;
+      position: absolute;
+      top: 3rem;
+      left: 0;
+      background-color: hsl(171, 100%, 41%);
+      width: 100%;
+  }
+
+  .header-links.show {
+      display: flex; /* Show on click */
+  }
+
+  .header-link {
+      margin: 0; /* Remove margin between links in mobile view */
+  }
+
+  .hamburger-menu {
+      display: block; /* Show hamburger menu on smaller screens */
+  }
+}
