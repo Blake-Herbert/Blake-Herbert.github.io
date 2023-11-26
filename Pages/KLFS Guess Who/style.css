@@ -1,3 +1,13 @@
+.custom-box {
+    background-color: hsl(171, 100%, 41%);
+    color: #ffffff;
+  }
+
+.custom-box:hover {
+    background-color: hsl(171, 98%, 30%);
+    cursor: pointer;
+}
+
 /* Define styles for the custom header */
 .custom-header {
   background-color: hsl(171, 100%, 41%);
