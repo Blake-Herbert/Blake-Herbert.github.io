@@ -1,6 +1,10 @@
+html {
+  background-color: rgb(247, 235, 213);
+}
+
 /* Define styles for the custom header */
 .custom-header {
-  background-color: hsl(171, 100%, 41%);
+  background-color: rgb(159, 95, 51);
   color: #ffffff;
   display: flex;
   justify-content: space-between;
@@ -44,7 +48,7 @@
     position: absolute;
     top: 3rem;
     left: 0;
-    background-color: hsl(171, 100%, 41%);
+    background-color: rgb(159, 95, 51);
     width: 100%;
   }
 

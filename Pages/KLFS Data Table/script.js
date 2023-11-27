@@ -1,8 +1,31 @@
-// API endpoint for fetching inspection data
-const apiUrl = "https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=1%3D1&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json";
+// Format a date as 'YYYY-MM-DD' so it can be used in API query
+function formatDateToBeQueryable(date) {
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, '0');
+const day = String(date.getDate()).padStart(2, '0');
+return `${year}-${month}-${day}`;
+}
+
+// Get the apiURL to only include dates from the past year
+function constructApiUrl() {
+//Get current date and date from one year ago
+const currentDate = new Date();
+const oneYearAgo = new Date();
+oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
+
+// Format dates in 'YYYY-MM-DD' format
+const formattedCurrentDate = formatDateToBeQueryable(currentDate);
+const formattedOneYearAgo = formatDateToBeQueryable(oneYearAgo);
+
+// Construct the query URL
+const apiUrl = `https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=InspectionDate%20%3E=%20%27${formattedOneYearAgo}%27%20AND%20InspectionDate%20%3C=%20%27${formattedCurrentDate}%27&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json`;
+return apiUrl;
+}
+
+
 
 // Function to format a timestamp into a readable date string
-function formatDate(timestamp) {
+function formatDateToHumanReadable(timestamp) {
     if (timestamp) {
         const date = new Date(timestamp);
         return date.toDateString();
@@ -13,7 +36,7 @@ function formatDate(timestamp) {
 // Function to fetch and populate the sorted table
 function populateSortedTable() {
     // Fetch data from the specified API endpoint
-    fetch(apiUrl)
+    fetch(constructApiUrl())
         .then(response => response.json())
         .then(data => {
             
@@ -29,7 +52,7 @@ function populateSortedTable() {
             // Iterate through sorted features and populate the table
             sortedFeatures.forEach(feature => {
                 const attributes = feature.attributes;
-                const inspectionDate = formatDate(attributes.InspectionDate) || "N/A";
+                const inspectionDate = formatDateToHumanReadable(attributes.InspectionDate) || "N/A";
                 console.log({att:feature.attributes.InspectionDate,inspectionDate});
                 const premiseName = attributes.premise_name || "N/A";
                 const violationComments = attributes.Insp_Viol_Comments || "N/A";
