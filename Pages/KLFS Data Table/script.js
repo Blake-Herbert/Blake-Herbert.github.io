@@ -17,8 +17,8 @@ oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
 const formattedCurrentDate = formatDateToBeQueryable(currentDate);
 const formattedOneYearAgo = formatDateToBeQueryable(oneYearAgo);
 
-// Construct the query URL
-const apiUrl = `https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=InspectionDate%20%3E=%20%27${formattedOneYearAgo}%27%20AND%20InspectionDate%20%3C=%20%27${formattedCurrentDate}%27&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json`;
+// Construct the query URL with dynamic date range and critical_yn condition
+const apiUrl = `https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=critical_yn%20%3D%20'YES'%20AND%20InspectionDate%20%3E=%20'${formattedOneYearAgo}'%20AND%20InspectionDate%20%3C=%20'${formattedCurrentDate}'&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json`;
 return apiUrl;
 }
 
@@ -63,13 +63,11 @@ function populateSortedTable() {
                 const cell1 = row.insertCell(0);
                 const cell2 = row.insertCell(1);
                 const cell3 = row.insertCell(2);
-                const cell4 = row.insertCell(3);
 
                 // Populate cells with data
                 cell1.textContent = inspectionDate;
-                cell2.textContent = premiseName;
-                cell3.textContent = premise_street;
-                cell4.textContent = violationComments;
+                cell2.textContent = premiseName + " on " + premise_street;
+                cell3.textContent = violationComments;
             });
         })
         .catch(error => console.error("Error fetching data: " + error));

@@ -18,7 +18,7 @@ const formattedCurrentDate = formatDateToBeQueryable(currentDate);
 const formattedOneYearAgo = formatDateToBeQueryable(oneYearAgo);
 
 // Construct the query URL
-const apiUrl = `https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=InspectionDate%20%3E=%20%27${formattedOneYearAgo}%27%20AND%20InspectionDate%20%3C=%20%27${formattedCurrentDate}%27&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json`;
+const apiUrl = `https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?where=critical_yn%20%3D%20'YES'%20AND%20InspectionDate%20%3E=%20'${formattedOneYearAgo}'%20AND%20InspectionDate%20%3C=%20'${formattedCurrentDate}'&outFields=InspectionDate,premise_name,premise_adr1_street,Insp_Viol_Comments&outSR=4326&f=json`;
 return apiUrl;
 }
 
@@ -35,8 +35,11 @@ function formatDateToHumanReadable(timestamp) {
 // Function to reset the color of the options to their original state.
 function resetOptionColors() {
   option1.style.backgroundColor = "";
+  option1.style.color = "";
   option2.style.backgroundColor = "";
+  option2.style.color = "";
   option3.style.backgroundColor = "";
+  option3.style.color = "";
 }
 
 // Fetch data from the API and process it.
@@ -132,9 +135,14 @@ function fetchData() {
 
         // Update the color of the clicked option based on correctness.
         if (isCorrect) {
+          option1.style.backgroundColor = "rgb(50, 25, 0)";
+          option1.style.color = "gray";
+          option2.style.backgroundColor = "rgb(50, 25, 0)";
+          option2.style.color = "gray";
+          option3.style.backgroundColor = "rgb(50, 25, 0)";
+          option3.style.color = "gray";
           clickedOption.style.backgroundColor = "green"; // Change color to green for correct answer.
-          //alert("Correct answer!");
-
+          clickedOption.style.color = ""; // Reset text color
           // After a 2-second delay, move on to the next question.
           setTimeout(() => {
             // Reset the color of the options.
@@ -143,7 +151,8 @@ function fetchData() {
             fetchData();
           }, 750);
         } else {
-          clickedOption.style.backgroundColor = "red"; // Change color to red for incorrect answer.;
+          clickedOption.style.backgroundColor = "rgb(50, 25, 0)"; // Change color for incorrect answer.;
+          clickedOption.style.color = "gray";
         }
       }
     })
