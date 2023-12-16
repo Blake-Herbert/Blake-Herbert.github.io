@@ -118,6 +118,7 @@ function fetchData() {
       option1.textContent = answers[0].premise_name + " on " + answers[0].premise_adr1_street;
       option2.textContent = answers[1].premise_name + " on " + answers[1].premise_adr1_street;
       option3.textContent = answers[2].premise_name + " on " + answers[2].premise_adr1_street;
+      
 
       // Add event listeners to each option.
       option1.addEventListener("click", checkAnswer);
@@ -135,6 +136,14 @@ function fetchData() {
 
         // Update the color of the clicked option based on correctness.
         if (isCorrect) {
+
+          // Remove event listeners
+          option1.removeEventListener("click", checkAnswer);
+          option2.removeEventListener("click", checkAnswer);
+          option3.removeEventListener("click", checkAnswer);
+
+
+          // Dark out all options
           option1.style.backgroundColor = "rgb(50, 25, 0)";
           option1.style.color = "gray";
           option2.style.backgroundColor = "rgb(50, 25, 0)";
@@ -143,10 +152,12 @@ function fetchData() {
           option3.style.color = "gray";
           clickedOption.style.backgroundColor = "green"; // Change color to green for correct answer.
           clickedOption.style.color = ""; // Reset text color
+
           // After a 2-second delay, move on to the next question.
           setTimeout(() => {
             // Reset the color of the options.
             resetOptionColors();
+            
             // Call the fetchData function to get new data and update the quiz.
             fetchData();
           }, 750);
